@@ -46,7 +46,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         repo: "discord-assets",
         path: "current.js",
         message: `Build ${version.hash}`,
-        content: data,
+        content: Buffer.from(data).toString('base64'),
         committer: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"
@@ -60,7 +60,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         repo: "discord-assets",
         path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
         message: `Build ${version.hash}`,
-        content: data,
+        content: Buffer.from(data).toString('base64'),
         committer: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"
