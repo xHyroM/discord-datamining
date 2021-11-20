@@ -44,10 +44,10 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     data = Buffer.from(data).toString('base64');
 
-    const contentCurrentInfo = await octokit.rest.repos.getContent({
+    const contentCurrentInfo = await octokit.rest.git.createBlob({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `mining/current.js`,
+        content: data
     })
 
     await wait(500);
