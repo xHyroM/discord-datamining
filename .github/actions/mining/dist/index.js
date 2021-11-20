@@ -16638,7 +16638,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const version = (await hyttpo.get('https://canary.discord.com/assets/version.canary.json')).data;
     const date = new Date();
 
-    if(fs.existsSync(`mining/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`)) {
+    if(fs.existsSync(`mining/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${version.hash}.js`)) {
         error('I didn\'t find any changes.');
         
         return process.exit(0);
@@ -16685,7 +16685,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const commitInfo = await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `mining/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
+        path: `mining/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${version.hash}.js`,
         message: `Build ${version.hash}`,
         content: data,
         committer: {
@@ -16713,7 +16713,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     if(!buildsData.builds.some(d => d.hash === version.hash)) buildsData.builds.push({ 
         hash: version.hash,
-        path: `mining/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
+        path: `mining/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${version.hash}.js`,
         commit: commitInfo.data.commit.sha
     })
 

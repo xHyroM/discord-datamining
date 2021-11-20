@@ -3,16 +3,26 @@
 <table class="table" id="utilitiesTable">
     <thead>
         <tr>
+            <th scope="col">Date</th>
             <th scope="col">Hash</th>
             <th scope="col">Url</th>
+            <th scope="col">Commit</th>
         </tr>
     </thead>
 
     <tbody>
         {{ range $key, $value := $json.builds }}
             <tr>
+                {{ $replacedDate := replace .path "mining" "" }}
+                {{ $replacedDate2 := split $replacedDate "/" }}
+                {{ $dateYear := index ($replacedDate2) 1 }}
+                {{ $dateMonth := index ($replacedDate2) 2 }}
+                {{ $dateDay := index ($replacedDate2) 3 }}
+                
+                <td>{{ $dateYear }}/{{ $dateMonth }}/{{ $dateDay }}</td>
                 <td>{{ .hash }}</td>
-                <td><a href="https://github.com/xHyroM/discord-assets/blob/master/{{ .path }}">Github</a></td>
+                <td><a href="https://github.com/xHyroM/discord-assets/blob/master/{{ .path }}">github</a></td>
+                <td><a href="https://github.com/xHyroM/discord-assets/commit/{{ .commit }}">commit</a></td>
             </tr>
         {{ end }}
     </tbody>
