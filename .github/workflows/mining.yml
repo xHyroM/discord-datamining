@@ -12,7 +12,4 @@ jobs:
       - name: Mine
         uses: xHyroM/discord-assets/.github/actions/mining@master
         with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
-        env:
           GITHUB_TOKEN: ${{secrets.ACCESS_TOKEN}}
