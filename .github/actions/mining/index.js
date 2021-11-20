@@ -44,7 +44,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     data = Buffer.from(data).toString('base64');
 
-    await octokit.rest.repos.createOrUpdateFileContents({
+    const commitInfo = await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: "mining/current.js",
@@ -62,7 +62,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     await wait(500);
 
-    const commitInfo = await octokit.rest.repos.createOrUpdateFileContents({
+    await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: `mining/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${version.hash}.js`,
