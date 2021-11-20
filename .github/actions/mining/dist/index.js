@@ -16624,6 +16624,7 @@ const fs = __nccwpck_require__(5747);
 const chalk = __nccwpck_require__(6216);
 const core = __nccwpck_require__(2569);
 const github = __nccwpck_require__(8126);
+const wait = __nccwpck_require__(1669).promisify(setTimeout);
 
 const log = (msg) => console.log(`${chalk.bgCyan(` LOG `)} ${msg}`);
 const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
@@ -16658,14 +16659,12 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     log('Beautify...');
     let reqFile = await hyttpo.get('https://canary.discord.com/assets/'+file);
     let data = beautify(reqFile.data, { indent_size: 2, space_in_empty_paren: true });
-    let data2 = beautify(reqFile.data, { indent_size: 3, space_in_empty_paren: true });
 
     log('Writing...');
 
     data = Buffer.from(data).toString('base64');
-    data2 = Buffer.from(data2).toString('base64');
 
-    octokit.rest.repos.createOrUpdateFileContents({
+    await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: "current.js",
@@ -16679,9 +16678,11 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
             name: "xHyroM",
             email: "generalkubo@gmail.com"
         }
-    })
+    }).catch(e => console.log(e))
 
-    octokit.rest.repos.createOrUpdateFileContents({
+    wait(3000);
+
+    await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
@@ -16695,7 +16696,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
             name: "xHyroM",
             email: "generalkubo@gmail.com"
         }
-    })
+    }).catch(e => console.log(e))
 
     log('Done!');
 })();
