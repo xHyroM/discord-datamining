@@ -16705,20 +16705,21 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         repo: "discord-assets",
         path: `website/data/builds.json`,
     })
-    console.log(content)
 
     await wait(500);
+
+    let buildsData = JSON.parse(Buffer.from(content.data.content, 'base64').toString('utf-8'));
+    if(!buildsData.builds) buildsData.builds = [];
+
+    buildsData.builds.push(version.hash)
 
     await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: `website/data/builds.json`,
         message: `Build ${version.hash}`,
-        content: Buffer.from(JSON.stringify({
-            builds: [
-                "build id lol"
-            ]
-        })).toString('base64'),
+        sha: content.data.sha,
+        content: Buffer.from(JSON.stringify(buildsData)).toString('base64'),
         committer: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"
