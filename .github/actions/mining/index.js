@@ -18,7 +18,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const version = (await hyttpo.get('https://canary.discord.com/assets/version.canary.json')).data;
     const date = new Date();
 
-    if(fs.existsSync(`${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`)) {
+    if(fs.existsSync(`mining/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`)) {
         error('I didn\'t find any changes.');
         
         return process.exit(0);
@@ -47,7 +47,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: "current.js",
+        path: "mining/current.js",
         message: `Build ${version.hash}`,
         content: data,
         committer: {
@@ -65,7 +65,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const commitInfo = await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
+        path: `mining/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
         message: `Build ${version.hash}`,
         content: data,
         committer: {
@@ -77,7 +77,6 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
             email: "generalkubo@gmail.com"
         }
     }).catch(e => console.log(e))
-    console.log(commitInfo)
 
     await wait(500);
 
@@ -94,8 +93,8 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     if(!buildsData.builds.some(d => d.hash === version.hash)) buildsData.builds.push({ 
         hash: version.hash,
-        path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
-        commit: commitInfo.data.commit
+        path: `mining/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
+        commit: commitInfo.data.commit.sha
     })
 
     await octokit.rest.repos.createOrUpdateFileContents({
