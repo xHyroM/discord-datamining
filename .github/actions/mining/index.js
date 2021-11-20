@@ -17,7 +17,6 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const version = (await hyttpo.get('https://canary.discord.com/assets/version.canary.json')).data;
     const date = new Date();
 
-    console.log(version)
     if(fs.existsSync(`${__dirname}/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`)) {
         error('I didn\'t find any changes.');
         
@@ -39,10 +38,12 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     log('Beautify...');
     let reqFile = await hyttpo.get('https://canary.discord.com/assets/'+file);
     let data = beautify(reqFile.data, { indent_size: 2, space_in_empty_paren: true });
+    let data2 = beautify(reqFile.data, { indent_size: 3, space_in_empty_paren: true });
 
     log('Writing...');
 
     data = Buffer.from(data).toString('base64');
+    data2 = Buffer.from(data2).toString('base64');
 
     octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
@@ -65,7 +66,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         repo: "discord-assets",
         path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
         message: `Build ${version.hash}`,
-        content: data,
+        content: data2,
         committer: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"
