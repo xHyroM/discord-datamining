@@ -44,12 +44,21 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     data = Buffer.from(data).toString('base64');
 
+    const contentCurrentInfo = await octokit.rest.repos.getContent({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        path: `website/data/builds.json`,
+    })
+
+    await wait(500);
+
     const commitInfo = await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: "mining/current.js",
         message: `Build ${version.hash}`,
         content: data,
+        sha: contentCurrentInfo.data.commit.sha,
         committer: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"
