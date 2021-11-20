@@ -16680,7 +16680,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         }
     }).catch(e => console.log(e))
 
-    wait(3000);
+    await wait(500);
 
     await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
@@ -16688,6 +16688,37 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
         message: `Build ${version.hash}`,
         content: data,
+        committer: {
+            name: "xHyroM",
+            email: "generalkubo@gmail.com"
+        },
+        author: {
+            name: "xHyroM",
+            email: "generalkubo@gmail.com"
+        }
+    }).catch(e => console.log(e))
+
+    await wait(500);
+
+    const content = await octokit.rest.repos.getContent({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        path: `websbite/data/builds.json`,
+    })
+    console.log(content)
+
+    await wait(500);
+
+    await octokit.rest.repos.createOrUpdateFileContents({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        path: `website/data/builds.json`,
+        message: `Build ${version.hash}`,
+        content: Buffer.from(JSON.stringify({
+            builds: [
+                "build id lol"
+            ]
+        })).toString('base64'),
         committer: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"

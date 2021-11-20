@@ -1,0 +1,30 @@
+title = "Builds"
+baseURL = "https://xhyrom.github.io/discord-assets/"
+
+enableEmoji = true
+math = false          # enable KaTeX (https://katex.org/) globally
+googleAnalytics = ""  # add your tracking id
+
+[params]
+  author = "Hyro"
+  description = "Discord-DataMining builds"
+  favicon = "favicon.ico"  # path to a .ico to use as favicon
+  logo = ""  # url or path to a logo to put in the header
+  [params.footer]
+    text = "By Hyro, Contributors"
+    url = "https://github.com/xHyroM/discord-assets"
+  [params.style]  # appearance options (can be omitted)
+    fontFamily = "Inconsolata"
+    pageWidth = "750px"
+    avatarSize = "90px"
+    colorBlack = "#222222"
+    colorRed = "#dc3545"
+
+[permalinks]
+  "/" = "/:filename"
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[[resources]]
+  src = "**.md"
