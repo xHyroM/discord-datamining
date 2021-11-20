@@ -16707,7 +16707,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     await wait(500);
 
-    const commitInfo = await octokit.rest.repos.createOrUpdateFileContents({
+    await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: `mining/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${version.hash}.js`,
@@ -16739,7 +16739,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     if(!buildsData.builds.some(d => d.hash === version.hash)) buildsData.builds.push({ 
         hash: version.hash,
         path: `mining/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${version.hash}.js`,
-        commit: commitInfo.data.commit.sha
+        commit: latestCommitSha
     })
 
     await octokit.rest.repos.createOrUpdateFileContents({
