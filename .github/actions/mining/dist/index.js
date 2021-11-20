@@ -16682,7 +16682,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
+        path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/test.js`,
         message: `Build ${version.hash}`,
         content: data,
         committer: {
