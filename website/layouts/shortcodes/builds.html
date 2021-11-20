@@ -11,7 +11,8 @@
     <tbody>
         {{ range $key, $value := $json.builds }}
             <tr>
-                <td><a href="">{{ $value }}</a></td>
+                <td>{{ .hash }}</td>
+                <td><a href="https://github.com/xHyroM/discord-assets/blob/master/{{ .path }}">Github</a></td>
             </tr>
         {{ end }}
     </tbody>

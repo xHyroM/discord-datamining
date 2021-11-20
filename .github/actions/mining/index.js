@@ -62,7 +62,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     await wait(500);
 
-    await octokit.rest.repos.createOrUpdateFileContents({
+    const commitInfo = await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
@@ -77,6 +77,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
             email: "generalkubo@gmail.com"
         }
     }).catch(e => console.log(e))
+    console.log(commitInfo)
 
     await wait(500);
 
@@ -93,7 +94,8 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     if(!buildsData.builds.some(d => d.hash === version.hash)) buildsData.builds.push({ 
         hash: version.hash,
-        path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`
+        path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
+        commit: commitInfo.data.commit
     })
 
     await octokit.rest.repos.createOrUpdateFileContents({

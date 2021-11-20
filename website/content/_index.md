@@ -8,6 +8,4 @@ title = "List of builds"
 
 {{< builds >}}
 
-{{< button id="Windows" type="dark" url="other/windows" >}}
-
 </div>
