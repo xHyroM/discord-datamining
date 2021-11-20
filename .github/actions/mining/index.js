@@ -83,7 +83,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const content = await octokit.rest.repos.getContent({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `websbite/data/builds.json`,
+        path: `website/data/builds.json`,
     })
     console.log(content)
 
