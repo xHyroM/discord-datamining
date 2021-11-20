@@ -16637,6 +16637,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const version = (await hyttpo.get('https://canary.discord.com/assets/version.canary.json')).data;
     const date = new Date();
 
+    console.log(version)
     if(fs.existsSync(`${__dirname}/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`)) {
         error('I didn\'t find any changes.');
         
@@ -16682,7 +16683,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/test.js`,
+        path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
         message: `Build ${version.hash}`,
         content: data,
         committer: {
