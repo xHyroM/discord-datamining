@@ -1629,11 +1629,12 @@ function getLangStrings(file) {
   const allStrings = {};
 
   webpackModules.forEach((webpackChunk) => {
-    webpackChunk?.properties?.forEach((webpackModule) => {
-      if (
-        webpackModule?.value?.body?.body?.[1]?.expression?.right?.callee?.object?.name === "Object" &&
-        webpackModule?.value?.body?.body?.[1]?.expression?.right?.callee?.property?.name === "freeze" &&
-        webpackModule?.value?.body?.body?.[1]?.expression?.right?.arguments[0]
+    (webpackChunk && webpackChunk.properties) && webpackChunk.properties.forEach((webpackModule) => {
+      if (webpackModule && webpackModule.value && webpackModule.value.body && webpackModule.value.body[1] && webpackModule.value.body[1].expression && 
+          webpackModule.value.body[1].expression.right && webpackModule.value.body[1].expression.right.callee && webpackModule.value.body[1].expression.right.callee.object && webpackModule.value.body[1].expression.right.callee.name && webpackModule.value.body.body[1].expression.right.arguments[0] &&
+        webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
+        webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
+        webpackModule.value.body.body[1].expression.right.arguments[0]
       ) {
         if (
           webpackModule.value.body.body[1].expression.right.arguments[0].properties.some(
@@ -15354,14 +15355,14 @@ async function run() {
         if (!commit)
             return core.setFailed("commit not found")
 
-        const commitFile = commit.data.files?.[0]
+        const commitFile = commit.data.files[0]
 
-        if (!commitFile || commitFile?.status !== "added")
+        if (!commitFile || commitFile.status !== "added")
             return core.info("not a build commit")
 
-        const { blob_url, sha: fileSha } = commit?.data?.files?.[0]
+        const { blob_url, sha: fileSha } = commit.data.files[0]
 
-        if (!filePathRegex?.test(blob_url))
+        if (!filePathRegex.test(blob_url))
             return core.info("not a build file")
 
         const currentTree = await octokit.rest.git.getTree({
@@ -15369,7 +15370,7 @@ async function run() {
             repo,
             tree_sha: payload.before,
         })
-        const currentFileSha = currentTree?.data?.tree?.find?.(file => file.path === currentFilename)?.sha
+        const currentFileSha = currentTree.data.tree.find(file => file.path === currentFilename).sha
         console.log(currentTree.data)
 
         if (!currentFileSha)

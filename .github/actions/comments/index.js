@@ -29,14 +29,14 @@ async function run() {
         if (!commit)
             return core.setFailed("commit not found")
 
-        const commitFile = commit.data.files?.[0]
+        const commitFile = commit.data.files[0]
 
-        if (!commitFile || commitFile?.status !== "added")
+        if (!commitFile || commitFile.status !== "added")
             return core.info("not a build commit")
 
-        const { blob_url, sha: fileSha } = commit?.data?.files?.[0]
+        const { blob_url, sha: fileSha } = commit.data.files[0]
 
-        if (!filePathRegex?.test(blob_url))
+        if (!filePathRegex.test(blob_url))
             return core.info("not a build file")
 
         const currentTree = await octokit.rest.git.getTree({
@@ -44,7 +44,7 @@ async function run() {
             repo,
             tree_sha: payload.before,
         })
-        const currentFileSha = currentTree?.data?.tree?.find?.(file => file.path === currentFilename)?.sha
+        const currentFileSha = currentTree.data.tree.find(file => file.path === currentFilename).sha
         console.log(currentTree.data)
 
         if (!currentFileSha)
