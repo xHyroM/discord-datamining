@@ -47,7 +47,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const contentCurrentInfo = await octokit.rest.repos.getContent({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `website/data/builds.json`,
+        path: `mining/current.js`,
     })
 
     await wait(500);
