@@ -10240,34 +10240,34 @@ const Response = __nccwpck_require__(412);
 class Hyttpo {
     request(data) {
         if(typeof data !== 'object') throw Error('It must be an object!');
-        return this.#rawRequest(data)
+        return this.rawRequest(data)
     }
 
     get(data) {
         if(typeof data === 'string') data = { url: data };
 
-        return this.#rawRequest({ method: 'GET', ...data })
+        return this.rawRequest({ method: 'GET', ...data })
     }
 
     post(data) {
         if(typeof data === 'string') data = { url: data };
 
-        return this.#rawRequest({ method: 'POST', ...data })
+        return this.rawRequest({ method: 'POST', ...data })
     }
 
     patch(data) {
         if(typeof data === 'string') data = { url: data };
 
-        return this.#rawRequest({ method: 'PATCH', ...data })
+        return this.rawRequest({ method: 'PATCH', ...data })
     }
 
     delete(data) {
         if(typeof data === 'string') data = { url: data };
 
-        return this.#rawRequest({ method: 'DELETE', ...data })
+        return this.rawRequest({ method: 'DELETE', ...data })
     }
 
-    #rawRequest(data) {
+    rawRequest(data) {
         return new Promise((resolve, reject) => {
             let url = new URL(data.url);
             let request = url.protocol === 'https:' ? https : http;
