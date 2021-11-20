@@ -58,7 +58,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         path: "mining/current.js",
         message: `Build ${version.hash}`,
         content: data,
-        sha: contentCurrentInfo.data.commit.sha,
+        sha: contentCurrentInfo.data.sha,
         committer: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"
