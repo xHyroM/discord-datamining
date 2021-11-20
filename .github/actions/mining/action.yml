@@ -1,9 +1,0 @@
-name: "mining"
-description: Run discord-datamining
-inputs:
-  GITHUB_TOKEN:
-    description: 'Personal github token'
-    required: true
-runs:
-  using: "node12"
-  main: 'dist/index.js'
