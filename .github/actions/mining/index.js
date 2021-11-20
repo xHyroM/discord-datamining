@@ -44,30 +44,46 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     data = Buffer.from(data).toString('base64');
 
-    const contentCurrentInfo = await octokit.rest.git.createBlob({
+    let commits = await octokit.repos.listCommits({
         owner: "xHyroM",
         repo: "discord-assets",
-        content: data
+        sha: "master",
+        per_page: 1
+    })
+    let latestCommitSha = commits.data[0].sha
+    const treeSha = commits.data[0].commit.tree.sha
+
+    commits = await octokit.git.createTree({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        base_tree: treeSha,
+        tree: [
+            {
+                path: 'mining/current.js',
+                mode: '100644',
+                content: data
+            }
+        ]
     })
 
-    await wait(500);
-
-    const commitInfo = await octokit.rest.repos.createOrUpdateFileContents({
+    const newTreeSha = commits.data.sha
+    
+    commits = await octokit.git.createCommit({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: "mining/current.js",
         message: `Build ${version.hash}`,
-        content: data,
-        sha: contentCurrentInfo.data.sha,
-        committer: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        },
-        author: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        }
-    }).catch(e => console.log(e))
+        tree: newTreeSha,
+        parents: [latestCommitSha]
+    })
+    latestCommitSha = commits.data.sha
+
+    await octokit.git.updateRef({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        sha: latestCommitSha,
+        ref: `heads/master`,
+        force: true
+    })
 
     await wait(500);
 
