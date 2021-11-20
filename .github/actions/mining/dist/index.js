@@ -16638,7 +16638,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const version = (await hyttpo.get('https://canary.discord.com/assets/version.canary.json')).data;
     const date = new Date();
 
-    if(fs.existsSync(`${__dirname}/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`)) {
+    if(fs.existsSync(`${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`)) {
         error('I didn\'t find any changes.');
         
         return process.exit(0);
