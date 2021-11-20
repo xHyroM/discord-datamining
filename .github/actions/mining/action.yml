@@ -2,7 +2,7 @@ name: "mining"
 description: Run discord-datamining
 inputs:
   GITHUB_TOKEN:
-    description: "your token lol",
+    description: 'Personal github token'
     required: true
 runs:
   using: "node12"
