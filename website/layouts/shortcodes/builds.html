@@ -1,3 +1,18 @@
-{{ range (readDir "/") }}
-    <p>{{ .Name }}</p>
-{{ end }}
+{{ $json := getJSON "/data/builds.json" }}
+
+<table class="table" id="utilitiesTable">
+    <thead>
+        <tr>
+            <th scope="col">Hash</th>
+            <th scope="col">Url</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{ range $key, $value := $json.builds }}
+            <tr>
+                <td><a href="">{{ $value }}</a></td>
+            </tr>
+        {{ end }}
+    </tbody>
+</table>

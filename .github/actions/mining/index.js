@@ -91,7 +91,10 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     let buildsData = JSON.parse(Buffer.from(content.data.content, 'base64').toString('utf-8'));
     if(!buildsData.builds) buildsData.builds = [];
 
-    buildsData.builds.push(version.hash)
+    if(!buildsData.builds.some(d => d.hash === version.hash)) buildsData.builds.push({ 
+        hash: version.hash,
+        path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`
+    })
 
     await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
