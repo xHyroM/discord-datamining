@@ -1,0 +1,9 @@
+name: "mining"
+description: Run discord-datamining
+inputs:
+  GITHUB_TOKEN:
+    description: "your token lol",
+    required: true
+runs:
+  using: "node12"
+  main: 'dist/index.js'
