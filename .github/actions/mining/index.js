@@ -61,7 +61,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
             {
                 path: 'mining/current.js',
                 mode: '100644',
-                content: data
+                content: Buffer.from(data, 'base64').toString('utf-8')
             }
         ]
     })
