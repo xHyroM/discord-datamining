@@ -32,18 +32,13 @@ jobs:
       with:
           hugo-version: 'latest'
 
-      # CD
-    - name: cd
-      run: cd website/
-
-    # Step 3 - Clean and don't fail
-    - name: Clean public directory
-      run: rm -rf public
-
     # Step 4 - Builds the site using the latest version of Hugo
     # Also specifies the theme we want to use
     - name: Build
-      run: hugo
+      run: |
+        cd website/ 
+        rm -rf public
+        hugo
 
     # Step 6 - Push our generated site to our gh-pages branch
     - name: Deploy
