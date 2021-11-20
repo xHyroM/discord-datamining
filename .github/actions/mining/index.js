@@ -41,34 +41,39 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     log('Writing...');
 
+    data = Buffer.from(data).toString('base64');
+
     octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: "current.js",
         message: `Build ${version.hash}`,
-        content: Buffer.from(data).toString('base64'),
+        content: data,
         committer: {
+            name: "xHyroM",
+            email: "generalkubo@gmail.com"
+        },
+        author: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"
         }
     })
-
-    fs.writeFileSync('./current.js', data, null, 4);
 
     octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
         path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
         message: `Build ${version.hash}`,
-        content: Buffer.from(data).toString('base64'),
+        content: data,
         committer: {
+            name: "xHyroM",
+            email: "generalkubo@gmail.com"
+        },
+        author: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"
         }
     })
-
-    fs.mkdirSync(`${__dirname}/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}`, { recursive: true });
-    fs.writeFileSync(`${__dirname}/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`, data);
 
     log('Done!');
 })();
