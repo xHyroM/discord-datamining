@@ -16687,7 +16687,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         repo: "discord-assets",
         path: `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${version.hash}.js`,
         message: `Build ${version.hash}`,
-        content: data2,
+        content: data,
         committer: {
             name: "xHyroM",
             email: "generalkubo@gmail.com"
