@@ -16664,7 +16664,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     data = Buffer.from(data).toString('base64');
 
-    let commits = await octokit.repos.listCommits({
+    let commits = await octokit.rest.repos.listCommits({
         owner: "xHyroM",
         repo: "discord-assets",
         sha: "master",
@@ -16673,7 +16673,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     let latestCommitSha = commits.data[0].sha
     const treeSha = commits.data[0].commit.tree.sha
 
-    commits = await octokit.git.createTree({
+    commits = await octokit.rest.git.createTree({
         owner: "xHyroM",
         repo: "discord-assets",
         base_tree: treeSha,
@@ -16688,7 +16688,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     const newTreeSha = commits.data.sha
     
-    commits = await octokit.git.createCommit({
+    commits = await octokit.rest.git.createCommit({
         owner: "xHyroM",
         repo: "discord-assets",
         message: `Build ${version.hash}`,
@@ -16697,7 +16697,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     })
     latestCommitSha = commits.data.sha
 
-    await octokit.git.updateRef({
+    await octokit.rest.git.updateRef({
         owner: "xHyroM",
         repo: "discord-assets",
         sha: latestCommitSha,
