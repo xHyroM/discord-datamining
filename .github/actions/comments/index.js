@@ -3,10 +3,10 @@
 const core = require("@actions/core");
 const { context, getOctokit } = require("@actions/github")
 const differ = require("@adryd325/discord-datamining-lang-differ");
+const hyttpo = require('hyttpo');
 
 const token = process.env.GITHUB_TOKEN
 const filePathRegex = /\/\d{4}\/(?:\d{4}-\d{2}-\d{2}|\d{2}\/\d{2})\/[a-z0-9]{20,}\.js$/
-const currentFilename = "mining/current.js"
 
 async function run() {
     try {
@@ -44,8 +44,12 @@ async function run() {
             repo,
             tree_sha: payload.before,
         })
-        const currentFileSha = currentTree.data.tree.find(file => file.path === currentFilename).sha
-        console.log(currentTree.data)
+        let currentFileSha = currentTree.data.tree.find(file => file.path === "mining").url
+
+        currentFileSha = await (await hyttpo.request({
+            method: 'GET',
+            url: currentFileSha
+        })).data.tree.find(file => file.path === 'current.js').sha
 
         if (!currentFileSha)
             return core.info("no current file")

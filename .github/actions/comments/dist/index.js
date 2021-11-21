@@ -1630,12 +1630,12 @@ function getLangStrings(file) {
 
   webpackModules.forEach((webpackChunk) => {
     (webpackChunk && webpackChunk.properties) && webpackChunk.properties.forEach((webpackModule) => {
-      if (webpackModule && webpackModule.value && webpackModule.value.body && webpackModule.value.body[1] && webpackModule.value.body[1].expression && 
-          webpackModule.value.body[1].expression.right && webpackModule.value.body[1].expression.right.callee && webpackModule.value.body[1].expression.right.callee.object && webpackModule.value.body[1].expression.right.callee.name && webpackModule.value.body.body[1].expression.right.arguments[0] &&
-        webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
-        webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
-        webpackModule.value.body.body[1].expression.right.arguments[0]
-      ) {
+		if (webpackModule && webpackModule.value && webpackModule.value.body && webpackModule.value.body[1] && webpackModule.value.body[1].expression && 
+			webpackModule.value.body[1].expression.right && webpackModule.value.body[1].expression.right.callee && webpackModule.value.body[1].expression.right.callee.object && webpackModule.value.body[1].expression.right.callee.name && webpackModule.value.body.body[1].expression.right.arguments[0] &&
+		  webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
+		  webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
+		  webpackModule.value.body.body[1].expression.right.arguments[0]
+		) {
         if (
           webpackModule.value.body.body[1].expression.right.arguments[0].properties.some(
             (suspectedLangModule) => {
@@ -10873,6 +10873,40 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 
+/***/ 9674:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));exports.default=void 0;var https=_interopRequireWildcard(__nccwpck_require__(7211));var http=_interopRequireWildcard(__nccwpck_require__(8605));var zlib=_interopRequireWildcard(__nccwpck_require__(8761));var _utils=_interopRequireDefault(__nccwpck_require__(7622));var _Response=_interopRequireDefault(__nccwpck_require__(5913));function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj}}function _getRequireWildcardCache(nodeInterop){if(typeof WeakMap!=="function")return null;var cacheBabelInterop=new WeakMap;var cacheNodeInterop=new WeakMap;return(_getRequireWildcardCache=function(nodeInterop){return nodeInterop?cacheNodeInterop:cacheBabelInterop})(nodeInterop)}function _interopRequireWildcard(obj,nodeInterop){if(!nodeInterop&&obj&&obj.__esModule){return obj}if(obj===null||typeof obj!=="object"&&typeof obj!=="function"){return{default:obj}}var cache=_getRequireWildcardCache(nodeInterop);if(cache&&cache.has(obj)){return cache.get(obj)}var newObj={};var hasPropertyDescriptor=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var key in obj){if(key!=="default"&&Object.prototype.hasOwnProperty.call(obj,key)){var desc=hasPropertyDescriptor?Object.getOwnPropertyDescriptor(obj,key):null;if(desc&&(desc.get||desc.set)){Object.defineProperty(newObj,key,desc)}else{newObj[key]=obj[key]}}}newObj.default=obj;if(cache){cache.set(obj,newObj)}return newObj}const methods=["GET","POST","PATCH","PUT","TRACE","HEAD","OPTIONS","CONNECT","DELETE"];class Hyttpo{constructor(){methods.forEach(method=>{this[method.toLocaleLowerCase()]=data=>{if(typeof data==="string")data={url:data};return this.rawRequest({method:method,...data})}})}request(data){if(typeof data!=="object")throw Error("It must be an object!");return this.rawRequest(data)}rawRequest(data){return new Promise((resolve,reject)=>{let url=new URL(data.url);let isHttps=!!(url.protocol==="https:");let request=isHttps?https:http;let method=data.method.toUpperCase();let body=data.body;let headers=data.headers||{};if(!headers["Accept"])headers["Accept"]="application/json, text/plain, */*";if(!headers["User-Agent"])headers["User-Agent"]="riso/nodejs";if(["POST","PATCH","PUT","TRACE","HEAD","OPTIONS","CONNECT","DELETE"].includes(method))request=request.request;else request=request[method.toLowerCase()];let agent=isHttps?data.httpsAgent||data.agent:data.httpAgent||data.agent;let requestOptions={path:`${url.pathname}${url.search}`,method:method,headers:headers,hostname:url.hostname,port:url.port,agent:agent};let req=request(requestOptions,res=>{let lastRequest=req.req||req;let stream=res;if(res.statusCode!==204&&lastRequest.method!=="HEAD"){switch(res.headers["content-encoding"]){case"gzip":case"compress":case"deflate":stream=stream.pipe(zlib.createUnzip());delete res.headers["content-encoding"];break;}}let response={request:res,status:res.statusCode,statusText:res.statusMessage,headers:res.headers,data:null};if(data.responseType==="stream"){response.data=stream;let final=new _Response.default(response);if(final.ok)resolve(final);else reject(final)}else{let buffer=[];stream.on("data",chunk=>{buffer.push(chunk)});stream.on("error",error=>{if(req.aborted)return;reject(error)});stream.on("end",()=>{buffer=Buffer.concat(buffer);if(!["arraybuffer","buffer"].includes(data.responseType)){buffer=_utils.default.responseRefactor(buffer)}response.data=buffer;let final=new _Response.default(response);if(final.ok)resolve(final);else reject(final)})}});req.on("error",error=>{if(req.aborted&&error.code!=="ERR_FR_TOO_MANY_REDIRECTS")return;reject(error)});if(body&&method!=="GET"){var _body$constructor;if(_utils.default.isObject(body)&&((body===null||body===void 0?void 0:(_body$constructor=body.constructor)===null||_body$constructor===void 0?void 0:_body$constructor.name)==="FormData"||_utils.default.isStream(body))){body.pipe(req)}else{req.write(body);req.end()}}})}}var _default=Hyttpo;exports.default=_default;module.exports=exports.default;
+
+/***/ }),
+
+/***/ 6263:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));var _exportNames={};exports.default=void 0;var _hyttpo=_interopRequireDefault(__nccwpck_require__(9674));var _utils=__nccwpck_require__(7622);Object.keys(_utils).forEach(function(key){if(key==="default"||key==="__esModule")return;if(Object.prototype.hasOwnProperty.call(_exportNames,key))return;if(key in exports&&exports[key]===_utils[key])return;Object.defineProperty(exports,key,{enumerable:true,get:function(){return _utils[key]}})});var _Response=__nccwpck_require__(5913);Object.keys(_Response).forEach(function(key){if(key==="default"||key==="__esModule")return;if(Object.prototype.hasOwnProperty.call(_exportNames,key))return;if(key in exports&&exports[key]===_Response[key])return;Object.defineProperty(exports,key,{enumerable:true,get:function(){return _Response[key]}})});function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj}}var _default=new _hyttpo.default;exports.default=_default;
+module.exports = _default;
+module.exports.default = _default;
+
+/***/ }),
+
+/***/ 5913:
+/***/ ((module, exports) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));exports.default=void 0;class Response{constructor(options){this.request=options.request;this.status=options.status;this.statusText=options.statusText;this.headers=options.headers;this.data=options.data}get ok(){return this.status>=200&&this.status<=300}json(){return JSON.parse(this.data)}text(){return this.data.toString()}array(){return this.data.toString().split("\n")}buffer(){return Buffer.from(this.data)}}var _default=Response;exports.default=_default;module.exports=exports.default;
+
+/***/ }),
+
+/***/ 7622:
+/***/ ((module, exports) => {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", ({value:true}));exports.default=void 0;class Util{static isJSON(data){if(typeof data!=="string")return false;try{const result=JSON.parse(data);const type=toString.call(result);return type==="[object Object]"||type==="[object Array]"}catch(err){return false}}static isObject(data){return data!==null&&typeof data==="object"}static isFunction(data){return toString.call(data)==="[object Function]"}static isStream(data){return Util.isObject(data)&&Util.isFunction(data.data)}static responseRefactor(data){let stringedData=data.toString();if(Util.isJSON(stringedData))data=JSON.parse(data);else data=stringedData;return data}}var _default=Util;exports.default=_default;module.exports=exports.default;
+
+/***/ }),
+
 /***/ 8912:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -15329,10 +15363,10 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(6488);
 const { context, getOctokit } = __nccwpck_require__(5320)
 const differ = __nccwpck_require__(4061);
+const hyttpo = __nccwpck_require__(6263);
 
 const token = process.env.GITHUB_TOKEN
 const filePathRegex = /\/\d{4}\/(?:\d{4}-\d{2}-\d{2}|\d{2}\/\d{2})\/[a-z0-9]{20,}\.js$/
-const currentFilename = "mining/current.js"
 
 async function run() {
     try {
@@ -15370,8 +15404,12 @@ async function run() {
             repo,
             tree_sha: payload.before,
         })
-		console.log(currentTree.data)
-        const currentFileSha = currentTree.data.tree.find(file => file.path === currentFilename).sha
+        let currentFileSha = currentTree.data.tree.find(file => file.path === "mining").url
+
+        currentFileSha = await (await hyttpo.request({
+            method: 'GET',
+            url: currentFileSha
+        })).data.tree.find(file => file.path === 'current.js').sha
 
         if (!currentFileSha)
             return core.info("no current file")

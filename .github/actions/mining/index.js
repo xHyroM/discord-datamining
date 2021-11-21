@@ -18,12 +18,6 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const version = (await hyttpo.get('https://canary.discord.com/assets/version.canary.json')).data;
     const date = new Date();
 
-    if(fs.existsSync(`mining/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${version.hash}.js`)) {
-        error('I didn\'t find any changes.');
-        
-        return process.exit(0);
-    };
-
     log('Getting scripts...');
     const req = await hyttpo.get('https://canary.discord.com/login');
     const script = req.data.replace(/<|>|!|--|div|meta|svg|}|nonce|function/g, '').split('\n');
@@ -40,9 +34,18 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     let reqFile = await hyttpo.get('https://canary.discord.com/assets/'+file);
     let data = beautify(reqFile.data, { indent_size: 2, space_in_empty_paren: true });
 
-    log('Writing...');
+    log('Checking...');
 
     data = Buffer.from(data).toString('base64');
+
+    const currentFileContent = fs.readFileSync('mining/current.js').toString('base64');
+    if(currentFileContent === data) {
+        error('I didn\'t find any changes.');
+        
+        return process.exit(0);
+    };
+
+    log('Writing...');
 
     let commits = await octokit.rest.repos.listCommits({
         owner: "xHyroM",
