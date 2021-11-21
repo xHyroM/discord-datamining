@@ -11,7 +11,9 @@
     </thead>
 
     <tbody>
-        {{ range $key, $value := $json.builds }}
+        {{ $reversedBuilds := partial "reverse-slice.html" $json.builds }}
+
+        {{ range $reversedBuilds }}
             <tr>
                 {{ $replacedDate := replace .path "mining" "" }}
                 {{ $replacedDate2 := split $replacedDate "/" }}
