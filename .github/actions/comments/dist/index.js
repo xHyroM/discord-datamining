@@ -15397,7 +15397,7 @@ async function run() {
         const { blob_url, sha: fileSha } = commit.data.files[0]
 
         if (!filePathRegex.test(blob_url))
-            return core.info("not a build file")
+            core.info("not a build file")
 
         const currentTree = await octokit.rest.git.getTree({
             owner,
@@ -15412,7 +15412,7 @@ async function run() {
         })).data.tree.find(file => file.path === 'current.js').sha
 
         if (!currentFileSha)
-            return core.info("no current file")
+            core.info("no current file")
 
         const currentFile = await octokit.rest.git.getBlob({
             owner,
