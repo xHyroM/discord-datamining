@@ -76,7 +76,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     commits = await octokit.rest.git.createCommit({
         owner: "xHyroM",
         repo: "discord-assets",
-        message: `Build ${version.hash}`,
+        message: `${date.getMonth() + 1}/${date.getDay()} | Build ${version.hash}`,
         tree: newTreeSha,
         parents: [latestCommitSha]
     })
@@ -96,7 +96,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         owner: "xHyroM",
         repo: "discord-assets",
         path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
-        message: `${date.getMonth() + 1}/${data.getDay()} | Build ${version.hash}`,
+        message: `${date.getMonth() + 1}/${date.getDay()} | Build ${version.hash}`,
         content: data,
         committer: {
             name: "xHyroM",
@@ -131,7 +131,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         owner: "xHyroM",
         repo: "discord-assets",
         path: `website/data/builds.json`,
-        message: `${date.getMonth() + 1}/${data.getDay()} | Build ${version.hash}`,
+        message: `${date.getMonth() + 1}/${date.getDay()} | Build ${version.hash}`,
         sha: content.data.sha,
         content: Buffer.from(JSON.stringify(buildsData)).toString('base64'),
         committer: {
