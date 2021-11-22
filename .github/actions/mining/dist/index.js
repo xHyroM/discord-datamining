@@ -16696,7 +16696,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     commits = await octokit.rest.git.createCommit({
         owner: "xHyroM",
         repo: "discord-assets",
-        message: `${date.getMonth() + 1}/${date.getDay()} | Build ${version.hash}`,
+        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
         tree: newTreeSha,
         parents: [latestCommitSha]
     })
@@ -16716,7 +16716,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         owner: "xHyroM",
         repo: "discord-assets",
         path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
-        message: `${date.getMonth() + 1}/${date.getDay()} | Build ${version.hash}`,
+        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
         content: data,
         committer: {
             name: "xHyroM",
