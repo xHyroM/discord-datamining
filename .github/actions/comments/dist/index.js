@@ -15433,7 +15433,8 @@ async function run() {
                 "codeblock",
             )
         } catch (e) {
-            return core.setFailed(`unable to diff strings: ${e}`)
+            diff = undefined;
+            //return core.setFailed(`unable to diff strings: ${e}`)
         }
         console.log(diff)
 
