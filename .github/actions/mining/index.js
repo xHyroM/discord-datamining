@@ -34,11 +34,13 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     let reqFile = await hyttpo.get('https://canary.discord.com/assets/'+file);
     let data = beautify(reqFile.data, { indent_size: 2, space_in_empty_paren: true });
 
+    let fileName = data.split('\n')[0].split('see')[1].split('.LICENSE')[0].replace(/\s/g, '');
+
     log('Checking...');
 
     data = Buffer.from(data).toString('base64');
 
-    const currentFileContent = fs.readFileSync('mining/current.js').toString('base64');
+    const currentFileContent = fs.readFileSync('current.js').toString('base64');
     if(currentFileContent === data) {
         error('I didn\'t find any changes.');
         
@@ -62,7 +64,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         base_tree: treeSha,
         tree: [
             {
-                path: 'mining/current.js',
+                path: 'current.js',
                 mode: '100644',
                 content: Buffer.from(data, 'base64').toString('utf-8')
             }
@@ -93,8 +95,8 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     await octokit.rest.repos.createOrUpdateFileContents({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `mining/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${version.hash}.js`,
-        message: `Build ${version.hash}`,
+        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
+        message: `${date.getMonth() + 1}/${data.getDay()} | Build ${version.hash}`,
         content: data,
         committer: {
             name: "xHyroM",
@@ -121,7 +123,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     if(!buildsData.builds.some(d => d.hash === version.hash)) buildsData.builds.push({ 
         hash: version.hash,
-        path: `mining/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${version.hash}.js`,
+        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
         commit: latestCommitSha
     })
 
@@ -129,7 +131,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         owner: "xHyroM",
         repo: "discord-assets",
         path: `website/data/builds.json`,
-        message: `Build ${version.hash}`,
+        message: `${date.getMonth() + 1}/${data.getDay()} | Build ${version.hash}`,
         sha: content.data.sha,
         content: Buffer.from(JSON.stringify(buildsData)).toString('base64'),
         committer: {

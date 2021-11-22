@@ -13,6 +13,6 @@ jobs:
         with:
           node-version: '14.x'
       - name: Comment on commit
-        uses: xHyroM/discord-assets/.github/actions/comments@master
+        uses: Discord-Datamining/comments-action@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
