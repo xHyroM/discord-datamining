@@ -66,6 +66,8 @@ async function run() {
             core.debug(`${newContent.length}`)
         }
 
+        console.log(currentContent, newContent)
+
         let diff
         try {
             diff = differ(

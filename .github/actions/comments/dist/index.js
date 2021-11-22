@@ -1629,13 +1629,12 @@ function getLangStrings(file) {
   const allStrings = {};
 
   webpackModules.forEach((webpackChunk) => {
-    (webpackChunk) && (webpackChunk.properties) && webpackChunk.properties.forEach((webpackModule) => {
-		if (webpackModule && webpackModule.value && webpackModule.value.body && webpackModule.value.body[1] && webpackModule.value.body[1].expression && 
-			webpackModule.value.body[1].expression.right && webpackModule.value.body[1].expression.right.callee && webpackModule.value.body[1].expression.right.callee.object && webpackModule.value.body[1].expression.right.callee.name && webpackModule.value.body.body[1].expression.right.arguments[0] &&
-		  webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
-		  webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
-		  webpackModule.value.body.body[1].expression.right.arguments[0]
-		) {
+    webpackChunk.properties.forEach((webpackModule) => {
+      if (
+        webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
+        webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
+        webpackModule.value.body.body[1].expression.right.arguments[0]
+      ) {
         if (
           webpackModule.value.body.body[1].expression.right.arguments[0].properties.some(
             (suspectedLangModule) => {
@@ -15425,6 +15424,8 @@ async function run() {
             core.debug(`${currentContent.length}`)
             core.debug(`${newContent.length}`)
         }
+
+        console.log(currentContent, newContent)
 
         let diff
         try {
