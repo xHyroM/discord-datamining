@@ -15404,7 +15404,7 @@ async function run() {
             repo,
             tree_sha: payload.before,
         })
-        const currentFileSha = currentTree?.data?.tree?.find?.(file => file.path === "current.js")?.sha
+        const currentFileSha = currentTree.data.tree.find(file => file.path === "current.js").sha
 
         if (!currentFileSha)
             core.info("no current file")
