@@ -44,12 +44,7 @@ async function run() {
             repo,
             tree_sha: payload.before,
         })
-        let currentFileSha = currentTree.data.tree.find(file => file.path === "mining").url
-
-        currentFileSha = await (await hyttpo.request({
-            method: 'GET',
-            url: currentFileSha
-        })).data.tree.find(file => file.path === 'current.js').sha
+        const currentFileSha = currentTree?.data?.tree?.find?.(file => file.path === "current.js")?.sha
 
         if (!currentFileSha)
             core.info("no current file")
