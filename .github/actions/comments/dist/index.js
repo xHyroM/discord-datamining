@@ -1630,11 +1630,11 @@ function getLangStrings(file) {
 
   webpackModules.forEach((webpackChunk) => {
     webpackChunk.properties.forEach((webpackModule) => {
-      if (
-        webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
-        webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
-        webpackModule.value.body.body[1].expression.right.arguments[0]
-      ) {
+		if (
+		  webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
+		  webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
+		  webpackModule.value.body.body[1].expression.right.arguments[0]
+		) {
         if (
           webpackModule.value.body.body[1].expression.right.arguments[0].properties.some(
             (suspectedLangModule) => {
@@ -15425,8 +15425,6 @@ async function run() {
             core.debug(`${newContent.length}`)
         }
 
-        console.log(currentContent, newContent)
-
         let diff
         try {
             diff = differ(
@@ -15437,6 +15435,7 @@ async function run() {
         } catch (e) {
             return core.setFailed(`unable to diff strings: ${e}`)
         }
+        console.log(diff)
 
         if (!diff) {
             await hyttpo.request({

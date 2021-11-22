@@ -66,8 +66,6 @@ async function run() {
             core.debug(`${newContent.length}`)
         }
 
-        console.log(currentContent, newContent)
-
         let diff
         try {
             diff = differ(
@@ -78,6 +76,7 @@ async function run() {
         } catch (e) {
             return core.setFailed(`unable to diff strings: ${e}`)
         }
+        console.log(diff)
 
         if (!diff) {
             await hyttpo.request({
