@@ -16,3 +16,4 @@ jobs:
         uses: xHyroM/discord-assets/.github/actions/comments@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}

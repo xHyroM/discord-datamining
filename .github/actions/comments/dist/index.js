@@ -15363,9 +15363,10 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(2569);
 const { context, getOctokit } = __nccwpck_require__(8126)
 const differ = __nccwpck_require__(5947);
-const hyttpo = __nccwpck_require__(3950);
+const hyttpo = __nccwpck_require__(3950).default;
 
 const token = process.env.GITHUB_TOKEN
+const discordwebhook = process.env.DISCORD_WEBHOOK
 const filePathRegex = /\/\d{4}\/(?:\d{4}-\d{2}-\d{2}|\d{2}\/\d{2})\/[a-z0-9]{20,}\.js$/
 
 async function run() {
@@ -15390,7 +15391,6 @@ async function run() {
             return core.setFailed("commit not found")
 
         const commitFile = commit.data.files[0]
-        console.log(commitFile)
 
         if (!commitFile || commitFile.status !== "added") core.info("not a build commit")
 
@@ -15406,8 +15406,7 @@ async function run() {
         })
         const currentFileSha = currentTree.data.tree.find(file => file.path === "current.js").sha
 
-        if (!currentFileSha)
-            core.info("no current file")
+        if (!currentFileSha) return core.info("no current file")
 
         const currentFile = await octokit.rest.git.getBlob({
             owner,
@@ -15438,14 +15437,37 @@ async function run() {
             return core.setFailed(`unable to diff strings: ${e}`)
         }
 
-        if (!diff)
+        if (!diff) {
+            await hyttpo.request({
+                method: 'POST',
+                url: discordwebhook,
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: `<@&912434591472705567> https://github.com/xHyroM/discord-assets/commit/${commitSha}`
+                })
+            })
+
             return core.info("no strings changed")
+        }
 
         await octokit.rest.repos.createCommitComment({
             owner,
             repo,
             commit_sha: commitSha,
             body: diff
+        })
+
+        await hyttpo.request({
+            method: 'POST',
+            url: discordwebhook,
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                content: `<@&912434624108564542> <@&912434591472705567> https://github.com/xHyroM/discord-assets/commit/${commitSha}`
+            })
         })
         return core.info("created commit comment")
     } catch (error) {
