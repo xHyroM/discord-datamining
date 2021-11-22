@@ -131,7 +131,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         owner: "xHyroM",
         repo: "discord-assets",
         path: `website/data/builds.json`,
-        message: `${date.getMonth() + 1}/${date.getDay()} | Build ${version.hash}`,
+        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
         sha: content.data.sha,
         content: Buffer.from(JSON.stringify(buildsData)).toString('base64'),
         committer: {
