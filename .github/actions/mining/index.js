@@ -107,7 +107,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     await octokit.rest.repos.createOrUpdateFiles({
         owner: "xHyroM",
         repo: "discord-assets",
-        branch: "main",
+        branch: "master",
         createBranch: false,
         changes: [
           {
