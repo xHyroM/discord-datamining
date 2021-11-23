@@ -115,17 +115,23 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
             files: files,
           }
         ],
-      });
+    });
 
     await wait(500);
+
+    const commits = await octokit.rest.repos.listCommits({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        sha: "master",
+        per_page: 1
+    })
+    const latestCommitSha = commits.data[0].sha
 
     const content = await octokit.rest.repos.getContent({
         owner: "xHyroM",
         repo: "discord-assets",
         path: `website/data/builds.json`,
     })
-
-    await wait(500);
 
     let buildsData = JSON.parse(Buffer.from(content.data.content, 'base64').toString('utf-8'));
     if(!buildsData.builds) buildsData.builds = [];
