@@ -1,9 +1,6 @@
 name: Mining
 
-on: 
-  schedule:
-    - cron: "*/5 * * * *"
-  workflow_dispatch:
+on: [workflow_dispatch]
 
 jobs:
   mine:
