@@ -16524,7 +16524,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
                 content: Buffer.from(data, 'base64').toString('utf-8')
             }
         ]
-    }).catch(se => {
+    }).catch(async(se) => {
 commits = await octokit.rest.git.createTree({
         owner: "xHyroM",
         repo: "discord-assets",
