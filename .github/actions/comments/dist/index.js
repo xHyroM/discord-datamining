@@ -1629,7 +1629,7 @@ function getLangStrings(file) {
   const allStrings = {};
 
   webpackModules.forEach((webpackChunk) => {
-    webpackChunk.properties.forEach((webpackModule) => {
+    (webpackChunk.properties) && webpackChunk.properties.forEach((webpackModule) => {
 		if (
 		  webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
 		  webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
