@@ -7562,6 +7562,296 @@ exports.FetchError = FetchError;
 
 /***/ }),
 
+/***/ 1431:
+/***/ ((module) => {
+
+module.exports = function(octokit, opts) {
+  return new Promise(async (resolve, reject) => {
+    // Up front validation
+    try {
+      for (const req of ["owner", "repo", "branch"]) {
+        if (!opts[req]) {
+          return reject(`'${req}' is a required parameter`);
+        }
+      }
+
+      if (!opts.changes || !opts.changes.length) {
+        return reject("No changes provided");
+      }
+
+      // Destructuring for easier access later
+      let {
+        owner,
+        repo,
+        base,
+        branch: branchName,
+        createBranch,
+        committer,
+        author,
+        changes
+      } = opts;
+
+      let branchAlreadyExists = true;
+      let baseTree;
+
+      // Does the target branch already exist?
+      baseTree = await loadRef(octokit, owner, repo, branchName);
+      if (!baseTree) {
+        if (!createBranch) {
+          return reject(
+            `The branch '${branchName}' doesn't exist and createBranch is 'false'`
+          );
+        }
+
+        branchAlreadyExists = false;
+
+        // If not we use the base branch. If not provided, use the
+        // default from the repo
+        if (!base) {
+          // Work out the default branch
+          base = (
+            await octokit.rest.repos.get({
+              owner,
+              repo
+            })
+          ).data.default_branch;
+        }
+
+        baseTree = await loadRef(octokit, owner, repo, base);
+
+        if (!baseTree) {
+          return reject(`The branch '${base}' doesn't exist`);
+        }
+      }
+
+      // Create blobs
+      for (const change of changes) {
+        const message = change.message;
+        if (!message) {
+          return reject(`changes[].message is a required parameter`);
+        }
+
+        const hasFiles = change.files && Object.keys(change.files).length > 0;
+
+        const hasFilesToDelete =
+          Array.isArray(change.filesToDelete) &&
+          change.filesToDelete.length > 0;
+
+        if (!hasFiles && !hasFilesToDelete) {
+          return reject(
+            `either changes[].files or changes[].filesToDelete are required`
+          );
+        }
+
+        const treeItems = [];
+        // Handle file deletions
+        if (hasFilesToDelete) {
+          for (const fileName of change.filesToDelete) {
+            const exists = await fileExistsInRepo(
+              octokit,
+              owner,
+              repo,
+              fileName,
+              baseTree
+            );
+
+            // If it doesn't exist, and we're not ignoring missing files
+            // reject the promise
+            if (!exists && !change.ignoreDeletionFailures) {
+              return reject(
+                `The file ${fileName} could not be found in the repo`
+              );
+            }
+
+            // At this point it either exists, or we're ignoring failures
+            if (exists) {
+              treeItems.push({
+                path: fileName,
+                sha: null, // sha as null implies that the file should be deleted
+                mode: "100644",
+                type: "commit"
+              });
+            }
+          }
+        }
+
+        for (const fileName in change.files) {
+          const properties = change.files[fileName] || "";
+
+          const contents = properties.contents || properties;
+          const mode = properties.mode || "100644";
+          const type = properties.type || "blob";
+
+          if (!contents) {
+            return reject(`No file contents provided for ${fileName}`);
+          }
+
+          const fileSha = await createBlob(
+            octokit,
+            owner,
+            repo,
+            contents,
+            type
+          );
+
+          treeItems.push({
+            path: fileName,
+            sha: fileSha,
+            mode: mode,
+            type: type
+          });
+        }
+
+        // no need to issue further requests if there are no updates, creations and deletions
+        if (treeItems.length === 0) {
+          continue;
+        }
+
+        // Add those blobs to a tree
+        const tree = await createTree(
+          octokit,
+          owner,
+          repo,
+          treeItems,
+          baseTree
+        );
+
+        // Create a commit that points to that tree
+        const commit = await createCommit(
+          octokit,
+          owner,
+          repo,
+          committer,
+          author,
+          message,
+          tree,
+          baseTree
+        );
+
+        // Update the base tree if we have another commit to make
+        baseTree = commit.sha;
+      }
+
+      // Create a ref that points to that tree
+      let action = "createRef";
+      let updateRefBase = "refs/";
+
+      // Or if it already exists, we'll update that existing ref
+      if (branchAlreadyExists) {
+        action = "updateRef";
+        updateRefBase = "";
+      }
+
+      await octokit.rest.git[action]({
+        owner,
+        repo,
+        force: true,
+        ref: `${updateRefBase}heads/${branchName}`,
+        sha: baseTree
+      });
+
+      // Return the new branch name so that we can use it later
+      // e.g. to create a pull request
+      return resolve(branchName);
+    } catch (e) {
+      return reject(e);
+    }
+  });
+};
+
+async function fileExistsInRepo(octokit, owner, repo, path, branch) {
+  try {
+    await octokit.rest.repos.getContent({
+      method: "HEAD",
+      owner,
+      repo,
+      path,
+      ref: branch
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function createCommit(
+  octokit,
+  owner,
+  repo,
+  committer,
+  author,
+  message,
+  tree,
+  baseTree
+) {
+  return (
+    await octokit.rest.git.createCommit({
+      owner,
+      repo,
+      message,
+      committer,
+      author,
+      tree: tree.sha,
+      parents: [baseTree]
+    })
+  ).data;
+}
+
+async function createTree(octokit, owner, repo, treeItems, baseTree) {
+  return (
+    await octokit.rest.git.createTree({
+      owner,
+      repo,
+      tree: treeItems,
+      base_tree: baseTree
+    })
+  ).data;
+}
+
+async function createBlob(octokit, owner, repo, contents, type) {
+  if (type === "commit") {
+    return contents;
+  } else {
+    const file = (
+      await octokit.rest.git.createBlob({
+        owner,
+        repo,
+        content: Buffer.from(contents).toString("base64"),
+        encoding: "base64"
+      })
+    ).data;
+    return file.sha;
+  }
+}
+
+async function loadRef(octokit, owner, repo, ref) {
+  try {
+    const x = await octokit.rest.git.getRef({
+      owner,
+      repo,
+      ref: `heads/${ref}`
+    });
+    return x.data.object.sha;
+  } catch (e) {
+    // console.log(e);
+  }
+}
+
+
+/***/ }),
+
+/***/ 2861:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const plugin = __nccwpck_require__(1431);
+
+module.exports = function(octokit) {
+  octokit.rest.repos.createOrUpdateFiles = plugin.bind(null, octokit);
+};
+
+
+/***/ }),
+
 /***/ 714:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -16461,6 +16751,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 (async() => {
     const github_token = core.getInput('GITHUB_TOKEN', {required: true});
     const octokit = github.getOctokit(github_token);
+    __nccwpck_require__(2861)(octokit);
 
     log('Getting latest version...');
 
@@ -16498,7 +16789,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     log('Writing...');
 
-    let commits = await octokit.rest.repos.listCommits({
+    /*let commits = await octokit.rest.repos.listCommits({
         owner: "xHyroM",
         repo: "discord-assets",
         sha: "master",
@@ -16506,15 +16797,14 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     })
     let latestCommitSha = commits.data[0].sha
     const treeSha = commits.data[0].commit.tree.sha
- 
-   try {
+
     commits = await octokit.rest.git.createTree({
         owner: "xHyroM",
         repo: "discord-assets",
         base_tree: treeSha,
         tree: [
-{
-                path: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
+            {
+                path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
                 mode: '100644',
                 content: Buffer.from(data, 'base64').toString('utf-8')
             },
@@ -16524,71 +16814,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
                 content: Buffer.from(data, 'base64').toString('utf-8')
             }
         ]
-    }).catch(async(se) => {
-commits = await octokit.rest.git.createTree({
-        owner: "xHyroM",
-        repo: "discord-assets",
-        base_tree: treeSha,
-        tree: [
-            {
-                path: 'current.js',
-                mode: '100644',
-                content: Buffer.from(data, 'base64').toString('utf-8')
-            }
-        ]
     })
-
-await wait(500);
-
-    await octokit.rest.repos.createOrUpdateFileContents({
-        owner: "xHyroM",
-        repo: "discord-assets",
-        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
-        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
-        content: data,
-        committer: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        },
-        author: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        }
-    }).catch(e => console.log(e))
-})
-   } catch(e) {
-commits = await octokit.rest.git.createTree({
-        owner: "xHyroM",
-        repo: "discord-assets",
-        base_tree: treeSha,
-        tree: [
-            {
-                path: 'current.js',
-                mode: '100644',
-                content: Buffer.from(data, 'base64').toString('utf-8')
-            }
-        ]
-    })
-
-await wait(500);
-
-    await octokit.rest.repos.createOrUpdateFileContents({
-        owner: "xHyroM",
-        repo: "discord-assets",
-        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
-        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
-        content: data,
-        committer: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        },
-        author: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        }
-    }).catch(e => console.log(e))
-
-}
 
     const newTreeSha = commits.data.sha
     
@@ -16607,8 +16833,28 @@ await wait(500);
         sha: latestCommitSha,
         ref: `heads/master`,
         force: true
-    })
+    })*/
 
+    fileName = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`
+
+    let files = {};
+    files[fileName] = { contents: Buffer.from(data, 'base64').toString() };
+    files['current.js'] = {
+        contents: Buffer.from(data, 'base64').toString('utf-8'),
+      },
+
+    await octokit.rest.repos.createOrUpdateFiles({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        branch: "main",
+        createBranch: false,
+        changes: [
+          {
+            message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
+            files: files,
+          }
+        ],
+      });
 
     await wait(500);
 

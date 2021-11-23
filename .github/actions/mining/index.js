@@ -12,6 +12,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 (async() => {
     const github_token = core.getInput('GITHUB_TOKEN', {required: true});
     const octokit = github.getOctokit(github_token);
+    require("octokit-commit-multiple-files")(octokit);
 
     log('Getting latest version...');
 
@@ -49,7 +50,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     log('Writing...');
 
-    let commits = await octokit.rest.repos.listCommits({
+    /*let commits = await octokit.rest.repos.listCommits({
         owner: "xHyroM",
         repo: "discord-assets",
         sha: "master",
@@ -63,6 +64,11 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         repo: "discord-assets",
         base_tree: treeSha,
         tree: [
+            {
+                path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
+                mode: '100644',
+                content: Buffer.from(data, 'base64').toString('utf-8')
+            },
             {
                 path: 'current.js',
                 mode: '100644',
@@ -88,25 +94,28 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         sha: latestCommitSha,
         ref: `heads/master`,
         force: true
-    })
+    })*/
 
-    await wait(500);
+    fileName = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`
 
-    await octokit.rest.repos.createOrUpdateFileContents({
+    let files = {};
+    files[fileName] = { contents: Buffer.from(data, 'base64').toString() };
+    files['current.js'] = {
+        contents: Buffer.from(data, 'base64').toString('utf-8'),
+      },
+
+    await octokit.rest.repos.createOrUpdateFiles({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
-        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
-        content: data,
-        committer: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        },
-        author: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        }
-    }).catch(e => console.log(e))
+        branch: "main",
+        createBranch: false,
+        changes: [
+          {
+            message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
+            files: files,
+          }
+        ],
+      });
 
     await wait(500);
 
