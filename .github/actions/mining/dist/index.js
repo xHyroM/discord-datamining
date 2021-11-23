@@ -16506,8 +16506,26 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     })
     let latestCommitSha = commits.data[0].sha
     const treeSha = commits.data[0].commit.tree.sha
-
+ 
+   try {
     commits = await octokit.rest.git.createTree({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        base_tree: treeSha,
+        tree: [
+{
+                path: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
+                mode: '100644',
+                content: Buffer.from(data, 'base64').toString('utf-8')
+            },
+            {
+                path: 'current.js',
+                mode: '100644',
+                content: Buffer.from(data, 'base64').toString('utf-8')
+            }
+        ]
+    }).catch(se => {
+commits = await octokit.rest.git.createTree({
         owner: "xHyroM",
         repo: "discord-assets",
         base_tree: treeSha,
@@ -16519,6 +16537,58 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
             }
         ]
     })
+
+await wait(500);
+
+    await octokit.rest.repos.createOrUpdateFileContents({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
+        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
+        content: data,
+        committer: {
+            name: "xHyroM",
+            email: "generalkubo@gmail.com"
+        },
+        author: {
+            name: "xHyroM",
+            email: "generalkubo@gmail.com"
+        }
+    }).catch(e => console.log(e))
+})
+   } catch(e) {
+commits = await octokit.rest.git.createTree({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        base_tree: treeSha,
+        tree: [
+            {
+                path: 'current.js',
+                mode: '100644',
+                content: Buffer.from(data, 'base64').toString('utf-8')
+            }
+        ]
+    })
+
+await wait(500);
+
+    await octokit.rest.repos.createOrUpdateFileContents({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
+        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
+        content: data,
+        committer: {
+            name: "xHyroM",
+            email: "generalkubo@gmail.com"
+        },
+        author: {
+            name: "xHyroM",
+            email: "generalkubo@gmail.com"
+        }
+    }).catch(e => console.log(e))
+
+}
 
     const newTreeSha = commits.data.sha
     
@@ -16539,23 +16609,6 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         force: true
     })
 
-    await wait(500);
-
-    await octokit.rest.repos.createOrUpdateFileContents({
-        owner: "xHyroM",
-        repo: "discord-assets",
-        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
-        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
-        content: data,
-        committer: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        },
-        author: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        }
-    }).catch(e => console.log(e))
 
     await wait(500);
 
