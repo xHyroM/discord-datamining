@@ -4,6 +4,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const core = require('@actions/core');
 const github = require('@actions/github');
+const cheerio = require('cheerio');
 const wait = require('util').promisify(setTimeout);
 
 const log = (msg) => console.log(`${chalk.bgCyan(` LOG `)} ${msg}`);
@@ -20,7 +21,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const date = new Date();
 
     log('Getting scripts...');
-    const req = await hyttpo.get('https://canary.discord.com/login');
+    /*const req = await hyttpo.get('https://canary.discord.com/login');
     const script = req.data.replace(/<|>|!|--|div|meta|svg|}|nonce|function/g, '').split('\n');
 
     let file;
@@ -29,10 +30,15 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
             file = s.split('src="/assets/').slice(-1)[0].split('"')[0];
             break;
         }
-    }
+    }*/
+
+    const cheerio = require('cheerio');
+    const $ = cheerio.load(req.data);
+
+    let file = $('script').get().filter(s => s.attribs.src && s.attribs.integrity && s.attribs.integrity.includes('sha512-')).slice(-1)[0].attribs.src;
 
     log('Beautify...');
-    let reqFile = await hyttpo.get('https://canary.discord.com/assets/'+file);
+    let reqFile = await hyttpo.get('https://canary.discord.com'+file);
     let data = beautify(reqFile.data, { indent_size: 2, space_in_empty_paren: true });
 
     let fileName = data.split('\n')[0].split('see')[1].split('.LICENSE')[0].replace(/\s/g, '');

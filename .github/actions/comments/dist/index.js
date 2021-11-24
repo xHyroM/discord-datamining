@@ -1629,33 +1629,34 @@ function getLangStrings(file) {
   const allStrings = {};
 
   webpackModules.forEach((webpackChunk) => {
-    (webpackChunk.properties) && webpackChunk.properties.forEach((webpackModule) => {
-		      if (webpackModule && webpackModule.value && webpackModule.value.body && webpackModule.value.body[1] && webpackModule.value.body[1].expression && 
-          webpackModule.value.body[1].expression.right && webpackModule.value.body[1].expression.right.callee && webpackModule.value.body[1].expression.right.callee.object && webpackModule.value.body[1].expression.right.callee.name && webpackModule.value.body.body[1].expression.right.arguments[0] &&
-        webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
-        webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
-        webpackModule.value.body.body[1].expression.right.arguments[0]
-      ) { 
-        if (
-          webpackModule.value.body.body[1].expression.right.arguments[0].properties.some(
-            (suspectedLangModule) => {
-              if (
-                suspectedLangModule.key.name === "DISCORD_NAME" ||
-                suspectedLangModule.key.name === "TEAL"
-              ) {
-                return true;
-              }
-            }
-          )
-        ) {
-          webpackModule.value.body.body[1].expression.right.arguments[0].properties.forEach(
-            (langEntry) => {
-              allStrings[langEntry.key.name] = langEntry.value.raw;
-            }
-          );
-        }
-      }
-    });
+	if(webpackChunk.properties) {
+		webpackChunk.properties.forEach((webpackModule) => {
+			if (webpackModule.value && webpackModule.value.body && webpackModule.value.body.body && webpackModule.value.body.body[1] && webpackModule.value.body.body[1].expression && webpackModule.value.body.body[1].expression.right && webpackModule.value.body.body[1].expression.right.callee && webpackModule.value.body.body[1].expression.right.callee.object  && webpackModule.value.body.body[1].expression.right.callee.property  && webpackModule.value.body.body[1].expression.right.callee.object  &&
+			  webpackModule.value.body.body[1].expression.right.callee.object.name === "Object" &&
+			  webpackModule.value.body.body[1].expression.right.callee.property.name === "freeze" &&
+			  webpackModule.value.body.body[1].expression.right.arguments[0]
+			) {
+			  if (
+				webpackModule.value.body.body[1].expression.right.arguments[0].properties.some(
+				  (suspectedLangModule) => {
+					if (
+					  suspectedLangModule.key.name === "DISCORD_NAME" ||
+					  suspectedLangModule.key.name === "TEAL"
+					) {
+					  return true;
+					}
+				  }
+				)
+			  ) {
+				webpackModule.value.body.body[1].expression.right.arguments[0].properties.forEach(
+				  (langEntry) => {
+					allStrings[langEntry.key.name] = langEntry.value.raw;
+				  }
+				);
+			  }
+			}
+		  });
+	}
   });
   return allStrings
 }
@@ -15439,6 +15440,7 @@ async function run() {
         } catch (e) {
             return core.setFailed(`unable to diff strings: ${e}`)
         }
+        console.log(diff)
 
         if (!diff) {
             await hyttpo.request({

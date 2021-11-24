@@ -79,6 +79,7 @@ async function run() {
         } catch (e) {
             return core.setFailed(`unable to diff strings: ${e}`)
         }
+        console.log(diff)
 
         if (!diff) {
             await hyttpo.request({
