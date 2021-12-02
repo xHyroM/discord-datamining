@@ -15392,7 +15392,6 @@ async function run() {
         if (!commit)
             return core.setFailed("commit not found")
 
-		console.log(commit.data.files);
         const commitFile = commit.data.files[0]
 
         if (!commitFile || commitFile.status !== "added")

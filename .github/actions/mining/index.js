@@ -7,6 +7,10 @@ const github = require('@actions/github');
 const cheerio = require('cheerio');
 const wait = require('util').promisify(setTimeout);
 
+Number.prototype.pad = function() {
+    return (this < 10 ? '0' : '') + this;
+};
+
 const log = (msg) => console.log(`${chalk.bgCyan(` LOG `)} ${msg}`);
 const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
@@ -55,7 +59,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     log('Writing...');
 
-    fileName = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`
+    fileName = `${(date.getFullYear()).pad()}/${(date.getMonth() + 1).pad()}/${(date.getDate()).pad()}/${fileName}`
 
     let files = {};
     files[fileName] = { contents: Buffer.from(data, 'base64').toString() };
@@ -70,7 +74,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         createBranch: false,
         changes: [
           {
-            message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
+            message: `${(date.getFullYear()).pad()}/${(date.getMonth() + 1).pad()}/${(date.getDate()).pad()} | Build ${version.hash}`,
             files: files,
           }
         ],
@@ -97,7 +101,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     if(!buildsData.builds.some(d => d.hash === version.hash)) buildsData.builds.push({ 
         hash: version.hash,
-        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
+        path: `${(date.getFullYear()).pad()}/${(date.getMonth() + 1).pad()}/${(date.getDate()).pad()}/${fileName}`,
         commit: latestCommitSha
     })
 
@@ -105,7 +109,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         owner: "xHyroM",
         repo: "discord-assets",
         path: `website/data/builds.json`,
-        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
+        message: `${(date.getFullYear()).pad()}/${(date.getMonth() + 1).pad()}/${(date.getDate()).pad()} | Build ${version.hash}`,
         sha: content.data.sha,
         content: Buffer.from(JSON.stringify(buildsData)).toString('base64'),
         committer: {
