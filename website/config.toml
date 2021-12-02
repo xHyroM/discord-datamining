@@ -7,11 +7,11 @@ googleAnalytics = ""  # add your tracking id
 
 [params]
   author = "Hyro"
-  description = "Discord-DataMining builds"
+  description = "Discord Datamining | Builds"
   favicon = "favicon.ico"  # path to a .ico to use as favicon
   logo = ""  # url or path to a logo to put in the header
   [params.footer]
-    text = "By Hyro, Contributors"
+    text = "By Hyro"
     url = "https://github.com/xHyroM/discord-assets"
   [params.style]  # appearance options (can be omitted)
     fontFamily = "Inconsolata"
