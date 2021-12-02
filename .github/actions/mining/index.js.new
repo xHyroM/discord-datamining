@@ -4,6 +4,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const core = require('@actions/core');
 const github = require('@actions/github');
+const cheerio = require('cheerio');
 const wait = require('util').promisify(setTimeout);
 
 const log = (msg) => console.log(`${chalk.bgCyan(` LOG `)} ${msg}`);
@@ -12,6 +13,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 (async() => {
     const github_token = core.getInput('GITHUB_TOKEN', {required: true});
     const octokit = github.getOctokit(github_token);
+    require("octokit-commit-multiple-files")(octokit);
 
     log('Getting latest version...');
 
@@ -19,7 +21,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const date = new Date();
 
     log('Getting scripts...');
-    const req = await hyttpo.get('https://canary.discord.com/login');
+    /*const req = await hyttpo.get('https://canary.discord.com/login');
     const script = req.data.replace(/<|>|!|--|div|meta|svg|}|nonce|function/g, '').split('\n');
 
     let file;
@@ -28,10 +30,15 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
             file = s.split('src="/assets/').slice(-1)[0].split('"')[0];
             break;
         }
-    }
+    }*/
+
+    const cheerio = require('cheerio');
+    const $ = cheerio.load(req.data);
+
+    let file = $('script').get().filter(s => s.attribs.src && s.attribs.integrity && s.attribs.integrity.includes('sha512-')).slice(-1)[0].attribs.src;
 
     log('Beautify...');
-    let reqFile = await hyttpo.get('https://canary.discord.com/assets/'+file);
+    let reqFile = await hyttpo.get('https://canary.discord.com'+file);
     let data = beautify(reqFile.data, { indent_size: 2, space_in_empty_paren: true });
 
     let fileName = data.split('\n')[0].split('see')[1].split('.LICENSE')[0].replace(/\s/g, '');
@@ -49,7 +56,7 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
 
     log('Writing...');
 
-    let commits = await octokit.rest.repos.listCommits({
+    /*let commits = await octokit.rest.repos.listCommits({
         owner: "xHyroM",
         repo: "discord-assets",
         sha: "master",
@@ -63,6 +70,11 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         repo: "discord-assets",
         base_tree: treeSha,
         tree: [
+            {
+                path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
+                mode: '100644',
+                content: Buffer.from(data, 'base64').toString('utf-8')
+            },
             {
                 path: 'current.js',
                 mode: '100644',
@@ -88,35 +100,44 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         sha: latestCommitSha,
         ref: `heads/master`,
         force: true
-    })
+    })*/
 
-    await wait(500);
+    fileName = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`
 
-    await octokit.rest.repos.createOrUpdateFileContents({
+    let files = {};
+    files[fileName] = { contents: Buffer.from(data, 'base64').toString() };
+    files['current.js'] = {
+        contents: Buffer.from(data, 'base64').toString('utf-8'),
+      },
+
+    await octokit.rest.repos.createOrUpdateFiles({
         owner: "xHyroM",
         repo: "discord-assets",
-        path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
-        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
-        content: data,
-        committer: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        },
-        author: {
-            name: "xHyroM",
-            email: "generalkubo@gmail.com"
-        }
-    }).catch(e => console.log(e))
+        branch: "master",
+        createBranch: false,
+        changes: [
+          {
+            message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
+            files: files,
+          }
+        ],
+    });
 
     await wait(500);
+
+    const commits = await octokit.rest.repos.listCommits({
+        owner: "xHyroM",
+        repo: "discord-assets",
+        sha: "master",
+        per_page: 1
+    })
+    const latestCommitSha = commits.data[0].sha
 
     const content = await octokit.rest.repos.getContent({
         owner: "xHyroM",
         repo: "discord-assets",
         path: `website/data/builds.json`,
     })
-
-    await wait(500);
 
     let buildsData = JSON.parse(Buffer.from(content.data.content, 'base64').toString('utf-8'));
     if(!buildsData.builds) buildsData.builds = [];

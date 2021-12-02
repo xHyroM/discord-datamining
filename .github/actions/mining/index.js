@@ -21,8 +21,8 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     const date = new Date();
 
     log('Getting scripts...');
-    /*const req = await hyttpo.get('https://canary.discord.com/login');
-    const script = req.data.replace(/<|>|!|--|div|meta|svg|}|nonce|function/g, '').split('\n');
+    const req = await hyttpo.get('https://canary.discord.com/login');
+    /*const script = req.data.replace(/<|>|!|--|div|meta|svg|}|nonce|function/g, '').split('\n');
 
     let file;
     for(let s of script) {
@@ -32,7 +32,6 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
         }
     }*/
 
-    const cheerio = require('cheerio');
     const $ = cheerio.load(req.data);
 
     let file = $('script').get().filter(s => s.attribs.src && s.attribs.integrity && s.attribs.integrity.includes('sha512-')).slice(-1)[0].attribs.src;
@@ -55,52 +54,6 @@ const error = (msg) => console.log(`${chalk.bgRed(` ERR `)} ${msg}`);
     };
 
     log('Writing...');
-
-    /*let commits = await octokit.rest.repos.listCommits({
-        owner: "xHyroM",
-        repo: "discord-assets",
-        sha: "master",
-        per_page: 1
-    })
-    let latestCommitSha = commits.data[0].sha
-    const treeSha = commits.data[0].commit.tree.sha
-
-    commits = await octokit.rest.git.createTree({
-        owner: "xHyroM",
-        repo: "discord-assets",
-        base_tree: treeSha,
-        tree: [
-            {
-                path: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`,
-                mode: '100644',
-                content: Buffer.from(data, 'base64').toString('utf-8')
-            },
-            {
-                path: 'current.js',
-                mode: '100644',
-                content: Buffer.from(data, 'base64').toString('utf-8')
-            }
-        ]
-    })
-
-    const newTreeSha = commits.data.sha
-    
-    commits = await octokit.rest.git.createCommit({
-        owner: "xHyroM",
-        repo: "discord-assets",
-        message: `${date.getMonth() + 1}/${date.getDate()} | Build ${version.hash}`,
-        tree: newTreeSha,
-        parents: [latestCommitSha]
-    })
-    latestCommitSha = commits.data.sha
-
-    await octokit.rest.git.updateRef({
-        owner: "xHyroM",
-        repo: "discord-assets",
-        sha: latestCommitSha,
-        ref: `heads/master`,
-        force: true
-    })*/
 
     fileName = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}`
 

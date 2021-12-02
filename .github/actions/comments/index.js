@@ -79,7 +79,6 @@ async function run() {
         } catch (e) {
             return core.setFailed(`unable to diff strings: ${e}`)
         }
-        console.log(diff)
 
         if (!diff) {
             await hyttpo.request({
@@ -91,7 +90,7 @@ async function run() {
                 body: JSON.stringify({
                     content: `<@&912434591472705567> https://github.com/xHyroM/discord-assets/commit/${commitSha}`
                 })
-            })
+            }).catch(e => console.log(e))
 
             return core.info("no strings changed");
         }
@@ -112,7 +111,7 @@ async function run() {
             body: JSON.stringify({
                 content: `<@&912434624108564542> <@&912434591472705567> https://github.com/xHyroM/discord-assets/commit/${commitSha}`
             })
-        })
+        }).catch(e => console.log(e))
         return core.info("created commit comment")
     } catch (error) {
         core.setFailed(core.isDebug() ? error.stack : error.message)
