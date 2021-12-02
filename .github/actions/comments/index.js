@@ -36,6 +36,7 @@ async function run() {
         if (!commitFile || commitFile.status !== "added")
             return core.info("not a build commit")
 
+        console.log(commit.data.files);
         const { blob_url, sha: fileSha } = commit.data.files[0]
 
         if (!filePathRegex.test(blob_url))
