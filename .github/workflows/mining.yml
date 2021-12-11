@@ -10,6 +10,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Mine
-        uses: xHyroM/discord-assets/.github/actions/mining@master
+        uses: CDN-Github/xda-min@master
         with:
           GITHUB_TOKEN: ${{secrets.ACCESS_TOKEN}}

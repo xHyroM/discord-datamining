@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: '14.x'
       - name: Comment on commit
-        uses: xHyroM/discord-assets/.github/actions/comments@master
+        uses: CDN-Github/xda-comments@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
