@@ -17,13 +17,14 @@
             <tr>
                 {{ $replacedDate := replace .path "mining" "" }}
                 {{ $replacedDate2 := split $replacedDate "/" }}
-                {{ $dateYear := index ($replacedDate2) 1 }}
-                {{ $dateMonth := index ($replacedDate2) 2 }}
-                {{ $dateDay := index ($replacedDate2) 3 }}
+                {{ $dateYear := index ($replacedDate2) 3 }}
+                {{ $dateMonth := index ($replacedDate2) 1 }}
+                {{ $dateDay := index ($replacedDate2) 2 }}
+                {{ $file := index ($replacedDate2) 6 }}
                 
                 <td>{{ $dateYear }}/{{ $dateMonth }}/{{ $dateDay }}</td>
                 <td>{{ .hash }}</td>
-                <td><a href="https://github.com/xHyroM/discord-assets/blob/master/{{ .path }}">github</a></td>
+                <td><a href="https://github.com/xHyroM/discord-assets/blob/master/{{ $dateYear }}/{{ $dateMonth }}/{{ $dateDay }}/{{ $file }}">github</a></td>
                 <td><a href="https://github.com/xHyroM/discord-assets/commit/{{ .commit }}">commit</a></td>
             </tr>
         {{ end }}
