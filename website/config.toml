@@ -1,5 +1,5 @@
 title = "Builds"
-baseURL = "https://xhyrom.github.io/discord-assets/"
+baseURL = "https://xhyrom.github.io/discord-datamining/"
 
 enableEmoji = true
 math = false          # enable KaTeX (https://katex.org/) globally
