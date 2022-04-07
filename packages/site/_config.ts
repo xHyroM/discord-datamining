@@ -4,9 +4,9 @@ import resolveUrls from "https:/deno.land/x/lume@v1.7.2/plugins/resolve_urls.ts"
 import esbuild from "https:/deno.land/x/lume@v1.7.2/plugins/esbuild.ts";
 
 const site = lume(
-    {
-        src: "./src",
-    }
+  {
+    src: "./src",
+  },
 );
 
 site
@@ -21,7 +21,7 @@ site
     (path) => path.endsWith(".png") || path.endsWith(".jpg"),
   )
   // Filters
-  .filter('split', (str, separator) => str.split(separator))
+  .filter("split", (str, separator) => str.split(separator))
   .filter("slice", (arr, length) => arr.slice(0, length));
 
 export default site;
