@@ -1,0 +1,33 @@
+---
+title: Builds
+description: You can see the builds here.
+layout: layouts/base.njk
+---
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Hash</th>
+            <th scope="col">Url</th>
+            <th scope="col">Commit</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for build in builds.builds | reverse %}
+            <tr>
+                {% set replaced = build.path | replace("mining", "") %}
+                {% set date = replaced | split("/") %}
+                {% set dateYear = date[0] %}
+                {% set dateMonth = date[1] %}
+                {% set dateDay = date[2] %}
+
+                <td>{{ dateYear }}/{{ dateMonth }}/{{ dateDay }}</td>
+                <td>{{ build.hash }}</td>
+                <td><a href="https://github.com/xHyroM/discord-assets/blob/master/">github</a></td>
+                <td><a href="https://github.com/xHyroM/discord-assets/commit/{{ build.commit }}">commit</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
