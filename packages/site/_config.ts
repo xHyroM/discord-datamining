@@ -6,6 +6,7 @@ import esbuild from "https:/deno.land/x/lume@v1.7.2/plugins/esbuild.ts";
 const site = lume(
   {
     src: "./src",
+    location: new URL("https://xhyrom.github.io/discord-datamining"),
   },
 );
 
