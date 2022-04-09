@@ -22,10 +22,11 @@ layout: layouts/base.njk
                 {% set dateYear = date[0] %}
                 {% set dateMonth = date[1] %}
                 {% set dateDay = date[2] %}
+                {% set fileName = date[6] %}
 
                 <td>{{ dateYear }}/{{ dateMonth }}/{{ dateDay }}</td>
                 <td>{{ build.hash }}</td>
-                <td><a href="https://github.com/xHyroM/discord-assets/blob/master/">github</a></td>
+                <td><a href="https://github.com/xHyroM/discord-assets/blob/master/{{ dateYear }}/{{ dateMonth }}/{{ dateDay }}/{{ fileName }}">github</a></td>
                 <td><a href="https://github.com/xHyroM/discord-assets/commit/{{ build.commit }}">commit</a></td>
             </tr>
         {% endfor %}
