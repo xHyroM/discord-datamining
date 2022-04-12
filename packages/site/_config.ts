@@ -1,7 +1,7 @@
-import lume from "https:/deno.land/x/lume@v1.7.2/mod.ts";
-import postcss from "https:/deno.land/x/lume@v1.7.2/plugins/postcss.ts";
-import resolveUrls from "https:/deno.land/x/lume@v1.7.2/plugins/resolve_urls.ts";
-import esbuild from "https:/deno.land/x/lume@v1.7.2/plugins/esbuild.ts";
+import lume from "https:/deno.land/x/lume@v1.7.3/mod.ts";
+import postcss from "https:/deno.land/x/lume@v1.7.3/plugins/postcss.ts";
+import resolveUrls from "https:/deno.land/x/lume@v1.7.3/plugins/resolve_urls.ts";
+import esbuild from "https:/deno.land/x/lume@v1.7.3/plugins/esbuild.ts";
 
 const site = lume(
   {
