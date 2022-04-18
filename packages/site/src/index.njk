@@ -28,7 +28,7 @@ layout: layouts/base.njk
 
                 <td>{{ dateYear }}/{{ dateMonth }}/{{ dateDay }}</td>
                 <td>{{ build.hash }}</td>
-                <td><a href="https://github.com/xHyroM/discord-assets/blob/master/{{ dateYear }}/{{ dateMonth }}/{{ dateDay }}/{{ fileName }}">github</a></td>
+                <td><a href="https://github.com/xHyroM/discord-assets/blob/{{ build.commit }}/{{ dateYear }}/{{ dateMonth }}/{{ dateDay }}/{{ fileName }}">github</a></td>
                 <td><a href="https://github.com/xHyroM/discord-assets/commit/{{ build.commit }}">commit</a></td>
             </tr>
         {% endfor %}
